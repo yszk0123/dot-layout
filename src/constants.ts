@@ -3,3 +3,5 @@ export const VISUAL_HEIGHT = 500;
 export const LOGICAL_WIDTH = 100;
 export const LOGICAL_HEIGHT = 100;
 export const LOGICAL_MARGIN = 1;
+export const SCALE_X = VISUAL_WIDTH / (LOGICAL_WIDTH + 2 * LOGICAL_MARGIN);
+export const SCALE_Y = VISUAL_HEIGHT / (LOGICAL_HEIGHT + 2 * LOGICAL_MARGIN);
