@@ -12,10 +12,10 @@ export const ControlPanel: React.FunctionComponent<{
   return (
     <div className="ControlPanel">
       <Button className="ControlPanel__button" onClick={onAdd}>
-        Add
+        Add (A)
       </Button>
       <Button className="ControlPanel__button" onClick={onRemove} disabled={!canRemove}>
-        Remove
+        Remove (Del)
       </Button>
       <Button className="ControlPanel__button" onClick={onClear}>
         Clear
@@ -24,7 +24,7 @@ export const ControlPanel: React.FunctionComponent<{
         Randomize
       </Button>
       <Button className="ControlPanel__button" onClick={onSave}>
-        Save
+        Save (Cmd+S)
       </Button>
     </div>
   );

@@ -9,6 +9,7 @@ import { EdgeView } from './components/EdgeView';
 import { NodeView } from './components/NodeView';
 import { Stage } from './components/Stage';
 import { SCALE_X, SCALE_Y } from './constants';
+import { useGlobalKeyboardShortcut } from './hooks/useGlobalKeyboardShortcut';
 import { ActionType } from './redux/actions';
 import { initialState, reducer } from './redux/reducer';
 
@@ -102,6 +103,11 @@ const App: React.FunctionComponent<{}> = () => {
       dispatch({ type: ActionType.APP_LOAD, payload: { state: loadedState } });
     }
   }, []);
+
+  useGlobalKeyboardShortcut({
+    dispatch,
+    onSave: handleSave,
+  });
 
   return (
     <div className="App" onClick={handleDeselect}>
