@@ -3,6 +3,10 @@
   --radius: 4px;
   --border-width: 1px;
 
+  --font-sm: 1.4rem;
+  --font-md: 1.6rem;
+  --font-lg: 1.8rem;
+
   /* @see https://material-ui.com/customization/color/#color-palette */
   --palette-white: #ffffff;
   --palette-blue-200: #90caf9;
@@ -28,6 +32,7 @@
   --palette-grey-800: #424242;
   --palette-grey-900: #212121;
 
+  --color-shadow: rgba(0, 0, 0, 0.1);
   --color-text: var(--palette-grey-900);
   --color-disabled: var(--palette-grey-500);
   --color-hover: var(--palette-blue-300);
@@ -41,6 +46,7 @@
 .App {
   display: flex;
   flex-direction: column;
+  font-size: var(--font-md);
 }
 
 .Button {
@@ -69,12 +75,16 @@
   cursor: default;
 }
 
+.ControlPanel {
+  box-shadow: 0 1px 1px 0 var(--color-shadow);
+  padding: var(--space);
+}
+
 .ControlPanel__button + .ControlPanel__button {
   margin-left: var(--space);
 }
 
 .Stage {
-  margin-top: var(--space);
   background: lightgray;
 }
 
