@@ -35,15 +35,12 @@ const App: React.FunctionComponent<{}> = () => {
         dispatch({ type: ActionType.GRAPH_SELECT, payload: { id: node.id } });
       }
     },
-    [edges, selectedId],
+    [selectedId],
   );
 
-  const handleClickEdge = useCallback(
-    (edge: Edge) => {
-      dispatch({ type: ActionType.GRAPH_SELECT, payload: { id: edge.id } });
-    },
-    [edges, selectedId],
-  );
+  const handleClickEdge = useCallback((edge: Edge) => {
+    dispatch({ type: ActionType.GRAPH_SELECT, payload: { id: edge.id } });
+  }, []);
 
   const handleDoubleClick = useCallback((node: Node) => {
     const newText = prompt('text');
@@ -73,7 +70,7 @@ const App: React.FunctionComponent<{}> = () => {
         setDragging(false);
       }
     },
-    [nodes, draggingNode],
+    [draggingNode],
   );
 
   const handleMouseMove = useCallback(
