@@ -7,7 +7,8 @@ import { NODE_RADIUS } from '../constants';
 
 interface Props {
   node: Node;
-  onClick: () => void;
+  selected: boolean;
+  onClick: (event: React.MouseEvent) => void;
   onMouseDown: (payload: DragPayload, event: React.MouseEvent) => void;
   onMouseUp: (payload: DragPayload) => void;
   onMouseMove: (payload: DragPayload) => void;
@@ -15,6 +16,7 @@ interface Props {
 
 export const NodeView: React.FunctionComponent<Props> = ({
   node,
+  selected,
   onClick,
   onMouseDown,
   onMouseMove,
@@ -73,14 +75,22 @@ export const NodeView: React.FunctionComponent<Props> = ({
     };
   }, [handleMouseMove, startPoint]);
 
+  const handleClick = useCallback(
+    (event: React.MouseEvent) => {
+      event.stopPropagation();
+      onClick(event);
+    },
+    [onClick],
+  );
+
   return (
     <>
       <circle
-        className={classNames('NodeView', { dragging: startPoint })}
+        className={classNames('NodeView', { 'NodeView--selected': selected, dragging: startPoint })}
         cx={node.x}
         cy={node.y}
         r={NODE_RADIUS}
-        onClick={onClick}
+        onClick={handleClick}
         onMouseDown={handleMouseDown}
       />
       <text

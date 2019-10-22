@@ -13,11 +13,21 @@
 
 .NodeView {
   stroke: black;
-  fill: transparent;
+  fill: white;
+}
+
+.NodeView--selected {
+  stroke: blue;
+  fill: rgb(224, 224, 255);
 }
 
 .NodeView__text {
   fill: black;
   pointer-events: none;
   user-select: none;
+}
+
+.EdgeView {
+  stroke: black;
+  stroke-width: 2px;
 }
