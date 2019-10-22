@@ -1,8 +1,7 @@
+import { LOGICAL_HEIGHT, LOGICAL_WIDTH } from '../constants';
 import { generateId } from './generateId';
 import { generateN } from './generateN';
 import { Node } from './Node';
-
-const N = 100;
 
 interface Box {
   x: number;
@@ -24,11 +23,11 @@ function repeat(n: number): number[] {
   return result;
 }
 
-export function generateNode(): Node {
+function generateNode(): Node {
   const id = generateId();
-  const x = generateN(N);
-  const y = generateN(N);
-  return { id, x, y };
+  const x = generateN(LOGICAL_WIDTH);
+  const y = generateN(LOGICAL_HEIGHT);
+  return { id, x, y, text: 'sample' };
 }
 
 export function generateNodes(): Node[] {
@@ -36,12 +35,12 @@ export function generateNodes(): Node[] {
 }
 
 export function guessNode(nodes: Node[]): Node {
-  const box0 = { x: 0, y: 0, w: 100, h: 100 };
+  const box0 = { x: 0, y: 0, w: LOGICAL_WIDTH, h: LOGICAL_HEIGHT };
   const box = calculateAvailableBox(box0, nodes);
   const id = generateId();
   const x = box.x + box.w / 2;
   const y = box.y + box.h / 2;
-  return { id, x, y };
+  return { id, x, y, text: '' };
 }
 
 function calculateAvailableBox(box: Box, nodes: Node[]): Box {

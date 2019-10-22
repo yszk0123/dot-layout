@@ -94,7 +94,7 @@ const App: React.FunctionComponent<{}> = () => {
 function calculateDraggingNode({ node, start, current }: DragPayload): Node {
   const dx = (current.x - start.x) / SCALE_X;
   const dy = (current.y - start.y) / SCALE_Y;
-  return { ...node, x: node.x + dx, y: node.y + dy };
+  return { ...node, x: Math.floor(node.x + dx), y: Math.floor(node.y + dy) };
 }
 
 function isEqual(a: Node, b: Node): boolean {

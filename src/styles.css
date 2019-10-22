@@ -10,3 +10,14 @@
 .dragging {
   opacity: 0.5;
 }
+
+.NodeView {
+  stroke: black;
+  fill: transparent;
+}
+
+.NodeView__text {
+  fill: black;
+  pointer-events: none;
+  user-select: none;
+}

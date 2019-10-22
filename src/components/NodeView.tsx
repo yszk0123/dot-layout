@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { DragPayload } from '../calculation/DragPayload';
 import { Node } from '../calculation/Node';
 import { Point } from '../calculation/Point';
+import { NODE_RADIUS } from '../constants';
 
 interface Props {
   node: Node;
@@ -73,13 +74,24 @@ export const NodeView: React.FunctionComponent<Props> = ({
   }, [handleMouseMove, startPoint]);
 
   return (
-    <circle
-      className={classNames({ dragging: startPoint })}
-      cx={node.x}
-      cy={node.y}
-      r={1}
-      onClick={onClick}
-      onMouseDown={handleMouseDown}
-    />
+    <>
+      <circle
+        className={classNames('NodeView', { dragging: startPoint })}
+        cx={node.x}
+        cy={node.y}
+        r={NODE_RADIUS}
+        onClick={onClick}
+        onMouseDown={handleMouseDown}
+      />
+      <text
+        className="NodeView__text"
+        textAnchor="middle"
+        dominantBaseline="central"
+        x={node.x}
+        y={node.y}
+      >
+        {node.text}
+      </text>
+    </>
   );
 };
