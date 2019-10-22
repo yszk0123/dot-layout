@@ -37,6 +37,7 @@ export const EdgeView: React.FunctionComponent<Props> = ({
         y1={startNode.y + p.y * NODE_RADIUS}
         x2={endNode.x - p.x * NODE_RADIUS}
         y2={endNode.y - p.y * NODE_RADIUS}
+        markerEnd="url(#arrow)"
         onClick={handleClick}
       />
     </>
