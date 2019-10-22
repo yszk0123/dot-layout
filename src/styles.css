@@ -1,5 +1,7 @@
 :root {
   --space: 8px;
+  --radius: 4px;
+  --border-width: 1px;
 
   /* @see https://material-ui.com/customization/color/#color-palette */
   --palette-white: #ffffff;
@@ -27,6 +29,9 @@
   --palette-grey-900: #212121;
 
   --color-text: var(--palette-grey-900);
+  --color-disabled: var(--palette-grey-500);
+  --color-hover: var(--palette-blue-300);
+  --color-active: var(--palette-blue-200);
   --color-primary: var(--palette-blue-500);
   --color-primary-text: var(--palette-white);
   --color-secondary: var(--palette-pink-a400);
@@ -36,6 +41,32 @@
 .App {
   display: flex;
   flex-direction: column;
+}
+
+.Button {
+  padding: var(--space);
+  border: var(--border-width) solid var(--color-primary);
+  border-radius: var(--radius);
+  background: var(--color-primary);
+  color: var(--color-primary-text);
+}
+
+.Button:hover {
+  background: var(--color-hover);
+  border-color: var(--color-hover);
+  cursor: pointer;
+}
+
+.Button:active {
+  background: var(--color-active);
+  border-color: var(--color-active);
+  cursor: pointer;
+}
+
+.Button:disabled {
+  background: var(--color-disabled);
+  border-color: var(--color-disabled);
+  cursor: default;
 }
 
 .Stage {
