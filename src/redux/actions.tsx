@@ -1,4 +1,4 @@
-import { Node } from './calculation/Node';
+import { Node } from '../calculation/Node';
 
 export enum ActionType {
   CLEAR,

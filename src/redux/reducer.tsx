@@ -1,8 +1,8 @@
+import { generateNodes, guessNode } from '../calculation/Calculation';
+import { Edge } from '../calculation/Edge';
+import { generateId } from '../calculation/generateId';
+import { Node } from '../calculation/Node';
 import { Action, ActionType } from './actions';
-import { generateNodes, guessNode } from './calculation/Calculation';
-import { Edge } from './calculation/Edge';
-import { generateId } from './calculation/generateId';
-import { Node } from './calculation/Node';
 
 interface State {
   nodes: Node[];

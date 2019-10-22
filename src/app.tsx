@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useReducer, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { ActionType } from './actions';
 import { DragPayload } from './calculation/DragPayload';
 import { Edge } from './calculation/Edge';
 import { Node } from './calculation/Node';
@@ -9,7 +8,8 @@ import { EdgeView } from './components/EdgeView';
 import { NodeView } from './components/NodeView';
 import { Stage } from './components/Stage';
 import { SCALE_X, SCALE_Y } from './constants';
-import { initialState, reducer } from './reducer';
+import { ActionType } from './redux/actions';
+import { initialState, reducer } from './redux/reducer';
 
 const noop = () => {};
 
