@@ -1,5 +1,36 @@
 :root {
   --space: 8px;
+
+  /* @see https://material-ui.com/customization/color/#color-palette */
+  --palette-white: #ffffff;
+  --palette-blue-200: #90caf9;
+  --palette-blue-300: #64b5f6;
+  --palette-blue-400: #90caf9;
+  --palette-blue-500: #42a5f5;
+  --palette-pink-200: #f48fb1;
+  --palette-pink-300: #f06292;
+  --palette-pink-400: #ec407a;
+  --palette-pink-500: #e91e63;
+  --palette-pink-a100: #ff80ab;
+  --palette-pink-a200: #ff4081;
+  --palette-pink-a400: #f50057;
+
+  --palette-grey-50: #fafafa;
+  --palette-grey-100: #f5f5f5;
+  --palette-grey-200: #eeeeee;
+  --palette-grey-300: #e0e0e0;
+  --palette-grey-400: #bdbdbd;
+  --palette-grey-500: #9e9e9e;
+  --palette-grey-600: #757575;
+  --palette-grey-700: #616161;
+  --palette-grey-800: #424242;
+  --palette-grey-900: #212121;
+
+  --color-text: var(--palette-grey-900);
+  --color-primary: var(--palette-blue-500);
+  --color-primary-text: var(--palette-white);
+  --color-secondary: var(--palette-pink-a400);
+  --color-secondary-text: var(--palette-white);
 }
 
 .App {
