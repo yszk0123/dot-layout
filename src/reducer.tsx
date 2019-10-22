@@ -51,7 +51,13 @@ export function reducer(state: State, action: Action): State {
     }
     case ActionType.EDGE_ADD: {
       const { start, end } = action.payload;
-      if (start === null || start === end || hasEdgeByNodeIds(state.edges, start, end)) {
+      if (
+        start === null ||
+        start === end ||
+        !hasNodeById(state.nodes, start) ||
+        !hasNodeById(state.nodes, end) ||
+        hasEdgeByNodeIds(state.edges, start, end)
+      ) {
         return state;
       }
       const newEdge = { id: generateId(), start, end };
@@ -72,6 +78,10 @@ function updateNode(nodes: Node[], newNode: Node): Node[] {
 // function hasEdgeByNodeId(edges: Edge[], nodeId: string): boolean {
 //   return !!edges.find(edge => edge.start === nodeId || edge.end === nodeId);
 // }
+
+function hasNodeById(nodes: Node[], id: string): boolean {
+  return !!nodes.find(node => node.id === id);
+}
 
 function hasEdgeByNodeIds(edges: Edge[], nodeId1: string, nodeId2: string): boolean {
   return !!edges.find(
