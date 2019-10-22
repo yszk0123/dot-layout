@@ -1,21 +1,26 @@
-import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { DragPayload } from './calculation/DragPayload';
 import { Edge } from './calculation/Edge';
 import { Node } from './calculation/Node';
+import { Stage } from './calculation/Stage';
 import { load, save } from './calculation/Storage';
 import { ControlPanel } from './components/ControlPanel';
 import { EdgeView } from './components/EdgeView';
 import { NodeView } from './components/NodeView';
-import { Stage } from './components/Stage';
-import { SCALE_X, SCALE_Y } from './constants';
+import { StageView } from './components/StageView';
 import { useGlobalKeyboardShortcut } from './hooks/useGlobalKeyboardShortcut';
+import { useResize } from './hooks/useResize';
 import { ActionType } from './redux/actions';
 import { initialState, reducer } from './redux/reducer';
 
 const noop = () => {};
 
+const initialStage: Stage = { width: 1, height: 1 };
+
 const App: React.FunctionComponent<{}> = () => {
+  const stageContainerRef = useRef<HTMLDivElement>(null);
+  const [stage, setStage] = useState(initialStage);
   const [draggingNode, setDraggingNode] = useState<Node | null>(null);
   const [dragging, setDragging] = useState(false);
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -27,8 +32,8 @@ const App: React.FunctionComponent<{}> = () => {
   }, []);
 
   const handleAdd = useCallback(() => {
-    dispatch({ type: ActionType.NODE_ADD });
-  }, []);
+    dispatch({ type: ActionType.NODE_ADD, payload: { stage } });
+  }, [stage]);
 
   const handleClickNode = useCallback(
     (node: Node, event: React.MouseEvent) => {
@@ -94,8 +99,17 @@ const App: React.FunctionComponent<{}> = () => {
   }, [state]);
 
   const handleRandomize = useCallback(() => {
-    dispatch({ type: ActionType.APP_RANDOMIZE });
-  }, []);
+    dispatch({ type: ActionType.APP_RANDOMIZE, payload: { stage } });
+  }, [stage]);
+
+  const handleResize = useCallback(() => {
+    if (stageContainerRef.current === null) {
+      return;
+    }
+
+    const { width, height } = stageContainerRef.current.getBoundingClientRect();
+    setStage({ width, height });
+  }, [stageContainerRef]);
 
   useEffect(() => {
     const loadedState = load();
@@ -104,8 +118,13 @@ const App: React.FunctionComponent<{}> = () => {
     }
   }, []);
 
+  useResize(handleResize);
+
+  useEffect(handleResize, []);
+
   useGlobalKeyboardShortcut({
     dispatch,
+    onAdd: handleAdd,
     onSave: handleSave,
   });
 
@@ -119,42 +138,44 @@ const App: React.FunctionComponent<{}> = () => {
         onSave={handleSave}
         canRemove={selectedId !== null}
       />
-      <Stage>
-        {edges.map(edge => (
-          <EdgeView
-            key={edge.id}
-            edge={edge}
-            startNode={nodesById[edge.start]}
-            endNode={nodesById[edge.end]}
-            selected={selectedId === edge.id}
-            onClick={handleClickEdge}
-          />
-        ))}
-        {nodes.map(node => (
-          <NodeView
-            key={node.id}
-            node={node}
-            selected={selectedId === node.id}
-            onClick={handleClickNode}
-            onDoubleClick={handleDoubleClick}
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            onMouseMove={handleMouseMove}
-          />
-        ))}
-        {dragging && draggingNode !== null && (
-          <NodeView
-            key={draggingNode.id}
-            node={draggingNode}
-            selected={false}
-            onClick={noop}
-            onDoubleClick={noop}
-            onMouseDown={noop}
-            onMouseUp={noop}
-            onMouseMove={noop}
-          />
-        )}
-      </Stage>
+      <div className="StageContainer" ref={stageContainerRef}>
+        <StageView stage={stage}>
+          {edges.map(edge => (
+            <EdgeView
+              key={edge.id}
+              edge={edge}
+              startNode={nodesById[edge.start]}
+              endNode={nodesById[edge.end]}
+              selected={selectedId === edge.id}
+              onClick={handleClickEdge}
+            />
+          ))}
+          {nodes.map(node => (
+            <NodeView
+              key={node.id}
+              node={node}
+              selected={selectedId === node.id}
+              onClick={handleClickNode}
+              onDoubleClick={handleDoubleClick}
+              onMouseDown={handleMouseDown}
+              onMouseUp={handleMouseUp}
+              onMouseMove={handleMouseMove}
+            />
+          ))}
+          {dragging && draggingNode !== null && (
+            <NodeView
+              key={draggingNode.id}
+              node={draggingNode}
+              selected={false}
+              onClick={noop}
+              onDoubleClick={noop}
+              onMouseDown={noop}
+              onMouseUp={noop}
+              onMouseMove={noop}
+            />
+          )}
+        </StageView>
+      </div>
     </div>
   );
 };
@@ -168,8 +189,8 @@ function createLookupTable<T extends { id: string }>(values: T[]): Record<string
 }
 
 function calculateDraggingNode({ node, start, current }: DragPayload): Node {
-  const dx = (current.x - start.x) / SCALE_X;
-  const dy = (current.y - start.y) / SCALE_Y;
+  const dx = current.x - start.x;
+  const dy = current.y - start.y;
   return { ...node, x: Math.floor(node.x + dx), y: Math.floor(node.y + dy) };
 }
 

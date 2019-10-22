@@ -17,8 +17,9 @@ export function reducer(state: State, action: Action): State {
       return action.payload.state;
     }
     case ActionType.APP_RANDOMIZE: {
+      const { stage } = action.payload;
       const newState: State = {
-        nodes: generateNodes(),
+        nodes: generateNodes(stage),
         edges: [],
         selectedId: null,
       };
@@ -45,7 +46,8 @@ export function reducer(state: State, action: Action): State {
       return { ...state, selectedId: null };
     }
     case ActionType.NODE_ADD: {
-      const newNode = guessNode(state.nodes);
+      const { stage } = action.payload;
+      const newNode = guessNode(state.nodes, stage);
       return {
         ...state,
         nodes: [...state.nodes, newNode],

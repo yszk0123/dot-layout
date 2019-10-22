@@ -1,4 +1,5 @@
 import { Node } from '../calculation/Node';
+import { Stage } from '../calculation/Stage';
 import { State } from '../calculation/State';
 
 export enum ActionType {
@@ -20,12 +21,14 @@ export type Action =
     }
   | {
       type: ActionType.APP_RANDOMIZE;
+      payload: { stage: Stage };
     }
   | {
       type: ActionType.GRAPH_CLEAR;
     }
   | {
       type: ActionType.NODE_ADD;
+      payload: { stage: Stage };
     }
   | {
       type: ActionType.GRAPH_REMOVE;

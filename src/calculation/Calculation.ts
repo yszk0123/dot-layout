@@ -1,7 +1,7 @@
-import { LOGICAL_HEIGHT, LOGICAL_WIDTH } from '../constants';
 import { generateId } from './generateId';
 import { generateN } from './generateN';
 import { Node } from './Node';
+import { Stage } from './Stage';
 
 interface Box {
   x: number;
@@ -23,19 +23,19 @@ function repeat(n: number): number[] {
   return result;
 }
 
-function generateNode(): Node {
+function generateNode(stage: Stage): Node {
   const id = generateId();
-  const x = generateN(LOGICAL_WIDTH);
-  const y = generateN(LOGICAL_HEIGHT);
+  const x = generateN(stage.width);
+  const y = generateN(stage.height);
   return { id, x, y, text: 'sample' };
 }
 
-export function generateNodes(): Node[] {
-  return repeat(5).map(() => generateNode());
+export function generateNodes(stage: Stage): Node[] {
+  return repeat(5).map(() => generateNode(stage));
 }
 
-export function guessNode(nodes: Node[]): Node {
-  const box0 = { x: 0, y: 0, w: LOGICAL_WIDTH, h: LOGICAL_HEIGHT };
+export function guessNode(nodes: Node[], stage: Stage): Node {
+  const box0 = { x: 0, y: 0, w: stage.width, h: stage.height };
   const box = calculateAvailableBox(box0, nodes);
   const id = generateId();
   const x = box.x + box.w / 2;

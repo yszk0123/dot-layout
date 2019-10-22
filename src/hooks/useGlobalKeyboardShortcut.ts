@@ -5,14 +5,15 @@ import { useGlobalKeyboard } from './useGlobalKeyboard';
 
 interface Options {
   dispatch: Dispatch<Action>;
+  onAdd: () => void;
   onSave: () => void;
 }
 
-export function useGlobalKeyboardShortcut({ dispatch, onSave }: Options) {
+export function useGlobalKeyboardShortcut({ dispatch, onAdd, onSave }: Options) {
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {
       if (event.code === KeyCode.KEY_A) {
-        dispatch({ type: ActionType.NODE_ADD });
+        onAdd();
       } else if (event.code === KeyCode.BACKSPACE) {
         dispatch({ type: ActionType.GRAPH_REMOVE });
       } else if (event.code === KeyCode.ESCAPE) {
@@ -24,7 +25,7 @@ export function useGlobalKeyboardShortcut({ dispatch, onSave }: Options) {
       }
       event.preventDefault();
     },
-    [dispatch, onSave],
+    [dispatch, onAdd, onSave],
   );
 
   useGlobalKeyboard({ onKeyDown });

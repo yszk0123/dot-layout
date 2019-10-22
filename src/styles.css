@@ -44,7 +44,10 @@
 }
 
 .App {
+  position: absolute;
   display: flex;
+  width: 100vw;
+  height: 100vh;
   flex-direction: column;
   font-size: var(--font-md);
 }
@@ -82,6 +85,11 @@
 
 .ControlPanel__button + .ControlPanel__button {
   margin-left: var(--space);
+}
+
+.StageContainer {
+  min-height: 1px;
+  flex-grow: 1;
 }
 
 .Stage {
