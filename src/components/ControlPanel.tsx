@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from './Button';
 
 export const ControlPanel: React.FunctionComponent<{
   onAdd: () => void;
@@ -8,11 +9,15 @@ export const ControlPanel: React.FunctionComponent<{
 }> = ({ onAdd, onRemove, onClear, canRemove }) => {
   return (
     <div className="ControlPanel">
-      <button onClick={onAdd}>Add</button>
-      <button onClick={onRemove} disabled={!canRemove}>
+      <Button className="ControlPanel__button" onClick={onAdd}>
+        Add
+      </Button>
+      <Button className="ControlPanel__button" onClick={onRemove} disabled={!canRemove}>
         Remove
-      </button>
-      <button onClick={onClear}>Clear</button>
+      </Button>
+      <Button className="ControlPanel__button" onClick={onClear}>
+        Clear
+      </Button>
     </div>
   );
 };

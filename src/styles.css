@@ -69,6 +69,10 @@
   cursor: default;
 }
 
+.ControlPanel__button + .ControlPanel__button {
+  margin-left: var(--space);
+}
+
 .Stage {
   margin-top: var(--space);
   background: lightgray;
