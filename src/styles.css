@@ -1,0 +1,12 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.Stage {
+  background: lightgray;
+}
+
+.dragging {
+  opacity: 0.5;
+}
