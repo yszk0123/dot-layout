@@ -3,10 +3,10 @@ import { Node } from './calculation/Node';
 export enum ActionType {
   CLEAR,
   NODE_ADD,
-  NODE_REMOVE,
+  GRAPH_REMOVE,
   NODE_UPDATE,
-  NODE_SELECT,
-  NODE_DESELECT,
+  GRAPH_SELECT,
+  GRAPH_DESELECT,
   EDGE_ADD,
 }
 
@@ -18,7 +18,7 @@ export type Action =
       type: ActionType.NODE_ADD;
     }
   | {
-      type: ActionType.NODE_REMOVE;
+      type: ActionType.GRAPH_REMOVE;
     }
   | {
       type: ActionType.NODE_UPDATE;
@@ -27,13 +27,13 @@ export type Action =
       };
     }
   | {
-      type: ActionType.NODE_SELECT;
+      type: ActionType.GRAPH_SELECT;
       payload: {
-        nodeId: string;
+        id: string;
       };
     }
   | {
-      type: ActionType.NODE_DESELECT;
+      type: ActionType.GRAPH_DESELECT;
     }
   | {
       type: ActionType.EDGE_ADD;

@@ -7,19 +7,19 @@ import { Node } from './calculation/Node';
 interface State {
   nodes: Node[];
   edges: Edge[];
-  selectedNodeId: string | null;
+  selectedId: string | null;
 }
 
 export const initialState: State = {
   nodes: generateNodes(),
   edges: [],
-  selectedNodeId: null,
+  selectedId: null,
 };
 
 export function reducer(state: State, action: Action): State {
   switch (action.type) {
     case ActionType.CLEAR: {
-      return { ...state, nodes: [], edges: [], selectedNodeId: null };
+      return { ...state, nodes: [], edges: [], selectedId: null };
     }
     case ActionType.NODE_ADD: {
       const newNode = guessNode(state.nodes);
@@ -28,23 +28,26 @@ export function reducer(state: State, action: Action): State {
         nodes: [...state.nodes, newNode],
       };
     }
-    case ActionType.NODE_REMOVE: {
-      const newNodes = state.nodes.filter(node => node.id !== state.selectedNodeId);
+    case ActionType.GRAPH_REMOVE: {
+      const newNodes = state.nodes.filter(node => node.id !== state.selectedId);
       const newEdges = state.edges.filter(
-        edge => edge.start !== state.selectedNodeId && edge.end !== state.selectedNodeId,
+        edge =>
+          edge.id !== state.selectedId &&
+          edge.start !== state.selectedId &&
+          edge.end !== state.selectedId,
       );
       return { ...state, nodes: newNodes, edges: newEdges };
     }
-    case ActionType.NODE_SELECT: {
-      const { nodeId } = action.payload;
-      return { ...state, selectedNodeId: nodeId };
+    case ActionType.GRAPH_SELECT: {
+      const { id } = action.payload;
+      return { ...state, selectedId: id };
     }
     case ActionType.NODE_UPDATE: {
       const { node } = action.payload;
       return { ...state, nodes: updateNode(state.nodes, node) };
     }
-    case ActionType.NODE_DESELECT: {
-      return { ...state, selectedNodeId: null };
+    case ActionType.GRAPH_DESELECT: {
+      return { ...state, selectedId: null };
     }
     case ActionType.EDGE_ADD: {
       const { start, end } = action.payload;

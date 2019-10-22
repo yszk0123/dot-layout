@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useReducer, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { ActionType } from './actions';
 import { DragPayload } from './calculation/DragPayload';
+import { Edge } from './calculation/Edge';
 import { Node } from './calculation/Node';
 import { ControlPanel } from './components/ControlPanel';
 import { EdgeView } from './components/EdgeView';
@@ -15,7 +16,7 @@ const noop = () => {};
 const App: React.FunctionComponent<{}> = () => {
   const [draggingNode, setDraggingNode] = useState<Node | null>(null);
   const [dragging, setDragging] = useState(false);
-  const [{ nodes, edges, selectedNodeId }, dispatch] = useReducer(reducer, initialState);
+  const [{ nodes, edges, selectedId }, dispatch] = useReducer(reducer, initialState);
   const nodesById = useMemo(() => createLookupTable(nodes), [nodes]);
 
   const handleClear = useCallback(() => {
@@ -26,15 +27,22 @@ const App: React.FunctionComponent<{}> = () => {
     dispatch({ type: ActionType.NODE_ADD });
   }, []);
 
-  const handleClick = useCallback(
+  const handleClickNode = useCallback(
     (node: Node, event: React.MouseEvent) => {
       if (event.ctrlKey || event.metaKey) {
-        dispatch({ type: ActionType.EDGE_ADD, payload: { start: selectedNodeId, end: node.id } });
+        dispatch({ type: ActionType.EDGE_ADD, payload: { start: selectedId, end: node.id } });
       } else {
-        dispatch({ type: ActionType.NODE_SELECT, payload: { nodeId: node.id } });
+        dispatch({ type: ActionType.GRAPH_SELECT, payload: { id: node.id } });
       }
     },
-    [edges, selectedNodeId],
+    [edges, selectedId],
+  );
+
+  const handleClickEdge = useCallback(
+    (edge: Edge) => {
+      dispatch({ type: ActionType.GRAPH_SELECT, payload: { id: edge.id } });
+    },
+    [edges, selectedId],
   );
 
   const handleDoubleClick = useCallback((node: Node) => {
@@ -46,11 +54,11 @@ const App: React.FunctionComponent<{}> = () => {
   }, []);
 
   const handleDeselect = useCallback(() => {
-    dispatch({ type: ActionType.NODE_DESELECT });
+    dispatch({ type: ActionType.GRAPH_DESELECT });
   }, []);
 
   const handleRemove = useCallback(() => {
-    dispatch({ type: ActionType.NODE_REMOVE });
+    dispatch({ type: ActionType.GRAPH_REMOVE });
   }, []);
 
   const handleMouseDown = useCallback(({ node }: DragPayload) => {
@@ -87,7 +95,7 @@ const App: React.FunctionComponent<{}> = () => {
         onAdd={handleAdd}
         onRemove={handleRemove}
         onClear={handleClear}
-        canRemove={selectedNodeId !== null}
+        canRemove={selectedId !== null}
       />
       <Stage>
         {edges.map(edge => (
@@ -96,16 +104,16 @@ const App: React.FunctionComponent<{}> = () => {
             edge={edge}
             startNode={nodesById[edge.start]}
             endNode={nodesById[edge.end]}
-            selected={false}
-            onClick={noop}
+            selected={selectedId === edge.id}
+            onClick={handleClickEdge}
           />
         ))}
         {nodes.map(node => (
           <NodeView
             key={node.id}
             node={node}
-            selected={selectedNodeId === node.id}
-            onClick={handleClick}
+            selected={selectedId === node.id}
+            onClick={handleClickNode}
             onDoubleClick={handleDoubleClick}
             onMouseDown={handleMouseDown}
             onMouseUp={handleMouseUp}

@@ -10,10 +10,11 @@ interface Props {
   startNode: Node;
   endNode: Node;
   selected: boolean;
-  onClick: (event: React.MouseEvent) => void;
+  onClick: (edge: Edge, event: React.MouseEvent) => void;
 }
 
 export const EdgeView: React.FunctionComponent<Props> = ({
+  edge,
   startNode,
   endNode,
   selected,
@@ -24,9 +25,9 @@ export const EdgeView: React.FunctionComponent<Props> = ({
   const handleClick = useCallback(
     (event: React.MouseEvent) => {
       event.stopPropagation();
-      onClick(event);
+      onClick(edge, event);
     },
-    [onClick],
+    [edge, onClick],
   );
 
   return (
