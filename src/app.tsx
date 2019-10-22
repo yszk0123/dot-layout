@@ -20,7 +20,7 @@ const App: React.FunctionComponent<{}> = () => {
   const nodesById = useMemo(() => createLookupTable(nodes), [nodes]);
 
   const handleClear = useCallback(() => {
-    dispatch({ type: ActionType.CLEAR });
+    dispatch({ type: ActionType.GRAPH_CLEAR });
   }, []);
 
   const handleAdd = useCallback(() => {

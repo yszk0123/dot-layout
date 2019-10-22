@@ -18,15 +18,8 @@ export const initialState: State = {
 
 export function reducer(state: State, action: Action): State {
   switch (action.type) {
-    case ActionType.CLEAR: {
+    case ActionType.GRAPH_CLEAR: {
       return { ...state, nodes: [], edges: [], selectedId: null };
-    }
-    case ActionType.NODE_ADD: {
-      const newNode = guessNode(state.nodes);
-      return {
-        ...state,
-        nodes: [...state.nodes, newNode],
-      };
     }
     case ActionType.GRAPH_REMOVE: {
       const newNodes = state.nodes.filter(node => node.id !== state.selectedId);
@@ -42,12 +35,19 @@ export function reducer(state: State, action: Action): State {
       const { id } = action.payload;
       return { ...state, selectedId: id };
     }
+    case ActionType.GRAPH_DESELECT: {
+      return { ...state, selectedId: null };
+    }
+    case ActionType.NODE_ADD: {
+      const newNode = guessNode(state.nodes);
+      return {
+        ...state,
+        nodes: [...state.nodes, newNode],
+      };
+    }
     case ActionType.NODE_UPDATE: {
       const { node } = action.payload;
       return { ...state, nodes: updateNode(state.nodes, node) };
-    }
-    case ActionType.GRAPH_DESELECT: {
-      return { ...state, selectedId: null };
     }
     case ActionType.EDGE_ADD: {
       const { start, end } = action.payload;

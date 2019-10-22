@@ -1,7 +1,7 @@
 import { Node } from '../calculation/Node';
 
 export enum ActionType {
-  CLEAR,
+  GRAPH_CLEAR,
   NODE_ADD,
   GRAPH_REMOVE,
   NODE_UPDATE,
@@ -12,7 +12,7 @@ export enum ActionType {
 
 export type Action =
   | {
-      type: ActionType.CLEAR;
+      type: ActionType.GRAPH_CLEAR;
     }
   | {
       type: ActionType.NODE_ADD;
