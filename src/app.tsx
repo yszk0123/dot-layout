@@ -7,6 +7,7 @@ import { EdgeView } from './components/EdgeView';
 import { NodeView } from './components/NodeView';
 import { Stage } from './components/Stage';
 import { SCALE_X, SCALE_Y } from './constants';
+import { ControlPanel } from './ControlPanel';
 import { initialState, reducer } from './reducer';
 
 const noop = () => {};
@@ -118,11 +119,12 @@ const App: React.FunctionComponent<{}> = () => {
           />
         )}
       </Stage>
-      <button onClick={handleAdd}>Add</button>
-      <button onClick={handleRemove} disabled={selectedNodeId === null}>
-        Remove
-      </button>
-      <button onClick={handleClear}>Clear</button>
+      <ControlPanel
+        onAdd={handleAdd}
+        onRemove={handleRemove}
+        onClear={handleClear}
+        canRemove={selectedNodeId !== null}
+      />
     </div>
   );
 };
