@@ -93,8 +93,8 @@
 }
 
 .NodeView {
-  stroke: black;
-  fill: white;
+  stroke: var(--palette-grey-900);
+  fill: var(--palette-white);
 }
 
 .NodeView--selected {
@@ -112,12 +112,12 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  color: black;
+  color: var(--color-text);
   height: 100%;
   margin: 0;
 }
 
 .EdgeView {
-  stroke: black;
+  stroke: var(--palette-grey-900);
   stroke-width: 2px;
 }
