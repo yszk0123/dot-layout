@@ -4,6 +4,7 @@
   "description": "",
   "keywords": [],
   "main": "src/index.js",
+  "homepage": "https://yszk0123.github.io/dot-layout",
   "repository": "https://github.com/yszk0123/dot-layout.git",
   "author": "Yuji Suzuki <y0suzuki0123@gmail.com>",
   "license": "MIT",
