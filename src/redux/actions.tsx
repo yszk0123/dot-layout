@@ -1,6 +1,9 @@
 import { Node } from '../calculation/Node';
+import { State } from '../calculation/State';
 
 export enum ActionType {
+  APP_LOAD,
+  APP_RANDOMIZE,
   GRAPH_CLEAR,
   NODE_ADD,
   GRAPH_REMOVE,
@@ -11,6 +14,13 @@ export enum ActionType {
 }
 
 export type Action =
+  | {
+      type: ActionType.APP_LOAD;
+      payload: { state: State };
+    }
+  | {
+      type: ActionType.APP_RANDOMIZE;
+    }
   | {
       type: ActionType.GRAPH_CLEAR;
     }

@@ -2,22 +2,28 @@ import { generateNodes, guessNode } from '../calculation/Calculation';
 import { Edge } from '../calculation/Edge';
 import { generateId } from '../calculation/generateId';
 import { Node } from '../calculation/Node';
+import { State } from '../calculation/State';
 import { Action, ActionType } from './actions';
 
-interface State {
-  nodes: Node[];
-  edges: Edge[];
-  selectedId: string | null;
-}
-
 export const initialState: State = {
-  nodes: generateNodes(),
+  nodes: [],
   edges: [],
   selectedId: null,
 };
 
 export function reducer(state: State, action: Action): State {
   switch (action.type) {
+    case ActionType.APP_LOAD: {
+      return action.payload.state;
+    }
+    case ActionType.APP_RANDOMIZE: {
+      const newState: State = {
+        nodes: generateNodes(),
+        edges: [],
+        selectedId: null,
+      };
+      return newState;
+    }
     case ActionType.GRAPH_CLEAR: {
       return { ...state, nodes: [], edges: [], selectedId: null };
     }

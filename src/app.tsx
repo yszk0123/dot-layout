@@ -1,8 +1,9 @@
-import React, { useCallback, useMemo, useReducer, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { DragPayload } from './calculation/DragPayload';
 import { Edge } from './calculation/Edge';
 import { Node } from './calculation/Node';
+import { load, save } from './calculation/Storage';
 import { ControlPanel } from './components/ControlPanel';
 import { EdgeView } from './components/EdgeView';
 import { NodeView } from './components/NodeView';
@@ -16,7 +17,8 @@ const noop = () => {};
 const App: React.FunctionComponent<{}> = () => {
   const [draggingNode, setDraggingNode] = useState<Node | null>(null);
   const [dragging, setDragging] = useState(false);
-  const [{ nodes, edges, selectedId }, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { nodes, edges, selectedId } = state;
   const nodesById = useMemo(() => createLookupTable(nodes), [nodes]);
 
   const handleClear = useCallback(() => {
@@ -86,12 +88,29 @@ const App: React.FunctionComponent<{}> = () => {
     [draggingNode],
   );
 
+  const handleSave = useCallback(() => {
+    save(state);
+  }, [state]);
+
+  const handleRandomize = useCallback(() => {
+    dispatch({ type: ActionType.APP_RANDOMIZE });
+  }, []);
+
+  useEffect(() => {
+    const loadedState = load();
+    if (loadedState !== null) {
+      dispatch({ type: ActionType.APP_LOAD, payload: { state: loadedState } });
+    }
+  }, []);
+
   return (
     <div className="App" onClick={handleDeselect}>
       <ControlPanel
         onAdd={handleAdd}
         onRemove={handleRemove}
         onClear={handleClear}
+        onRandomize={handleRandomize}
+        onSave={handleSave}
         canRemove={selectedId !== null}
       />
       <Stage>
