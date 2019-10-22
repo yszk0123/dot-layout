@@ -1,9 +1,14 @@
+:root {
+  --space: 8px;
+}
+
 .App {
-  font-family: sans-serif;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
 }
 
 .Stage {
+  margin-top: var(--space);
   background: lightgray;
 }
 

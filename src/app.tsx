@@ -3,11 +3,11 @@ import ReactDOM from 'react-dom';
 import { ActionType } from './actions';
 import { DragPayload } from './calculation/DragPayload';
 import { Node } from './calculation/Node';
+import { ControlPanel } from './components/ControlPanel';
 import { EdgeView } from './components/EdgeView';
 import { NodeView } from './components/NodeView';
 import { Stage } from './components/Stage';
 import { SCALE_X, SCALE_Y } from './constants';
-import { ControlPanel } from './ControlPanel';
 import { initialState, reducer } from './reducer';
 
 const noop = () => {};
@@ -82,7 +82,13 @@ const App: React.FunctionComponent<{}> = () => {
   );
 
   return (
-    <div onClick={handleDeselect}>
+    <div className="App" onClick={handleDeselect}>
+      <ControlPanel
+        onAdd={handleAdd}
+        onRemove={handleRemove}
+        onClear={handleClear}
+        canRemove={selectedNodeId !== null}
+      />
       <Stage>
         {edges.map(edge => (
           <EdgeView
@@ -119,12 +125,6 @@ const App: React.FunctionComponent<{}> = () => {
           />
         )}
       </Stage>
-      <ControlPanel
-        onAdd={handleAdd}
-        onRemove={handleRemove}
-        onClear={handleClear}
-        canRemove={selectedNodeId !== null}
-      />
     </div>
   );
 };
