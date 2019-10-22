@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useReducer, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { generateNodes, guessNode } from './calculation/Calculation';
 import { DragPayload } from './calculation/DragPayload';
@@ -10,69 +10,126 @@ import { NodeView } from './components/NodeView';
 import { Stage } from './components/Stage';
 import { SCALE_X, SCALE_Y } from './constants';
 
-const initialNodes = generateNodes();
-const initialEdges: Edge[] = [];
-
 const noop = () => {};
 
+enum ActionType {
+  CLEAR,
+  NODE_ADD,
+  NODE_REMOVE,
+  NODE_UPDATE,
+  NODE_SELECT,
+  NODE_DESELECT,
+  EDGE_ADD,
+}
+
+type Action =
+  | { type: ActionType.CLEAR }
+  | { type: ActionType.NODE_ADD }
+  | { type: ActionType.NODE_REMOVE }
+  | { type: ActionType.NODE_UPDATE; payload: { node: Node } }
+  | { type: ActionType.NODE_SELECT; payload: { nodeId: string } }
+  | { type: ActionType.NODE_DESELECT }
+  | { type: ActionType.EDGE_ADD; payload: { start: string | null; end: string } };
+
+interface State {
+  nodes: Node[];
+  edges: Edge[];
+  selectedNodeId: string | null;
+}
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case ActionType.CLEAR: {
+      return { ...state, nodes: [], edges: [], selectedNodeId: null };
+    }
+    case ActionType.NODE_ADD: {
+      const newNode = guessNode(state.nodes);
+      return {
+        ...state,
+        nodes: [...state.nodes, newNode],
+      };
+    }
+    case ActionType.NODE_REMOVE: {
+      const newNodes = state.nodes.filter(node => node.id !== state.selectedNodeId);
+      const newEdges = state.edges.filter(
+        edge => edge.start !== state.selectedNodeId && edge.end !== state.selectedNodeId,
+      );
+      return { ...state, nodes: newNodes, edges: newEdges };
+    }
+    case ActionType.NODE_SELECT: {
+      const { nodeId } = action.payload;
+      return { ...state, selectedNodeId: nodeId };
+    }
+    case ActionType.NODE_UPDATE: {
+      const { node } = action.payload;
+      return { ...state, nodes: updateNode(state.nodes, node) };
+    }
+    case ActionType.NODE_DESELECT: {
+      return { ...state, selectedNodeId: null };
+    }
+    case ActionType.EDGE_ADD: {
+      const { start, end } = action.payload;
+      if (start === null || start === end || hasEdgeByNodeIds(state.edges, start, end)) {
+        return state;
+      }
+
+      const newEdge = { id: generateId(), start, end };
+      return {
+        ...state,
+        edges: [...state.edges, newEdge],
+      };
+    }
+    default:
+      return state;
+  }
+}
+
+const initialState: State = {
+  nodes: generateNodes(),
+  edges: [],
+  selectedNodeId: null,
+};
+
 const App: React.FunctionComponent<{}> = () => {
-  const [nodes, setNodes] = useState(initialNodes);
-  const [edges, setEdges] = useState(initialEdges);
   const [draggingNode, setDraggingNode] = useState<Node | null>(null);
   const [dragging, setDragging] = useState(false);
-  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [{ nodes, edges, selectedNodeId }, dispatch] = useReducer(reducer, initialState);
   const nodesById = useMemo(() => createLookupTable(nodes), [nodes]);
 
   const handleClear = useCallback(() => {
-    setNodes([]);
+    dispatch({ type: ActionType.CLEAR });
   }, []);
 
   const handleAdd = useCallback(() => {
-    const newNode = guessNode(nodes);
-    setNodes([...nodes, newNode]);
-  }, [nodes]);
+    dispatch({ type: ActionType.NODE_ADD });
+  }, []);
 
   const handleClick = useCallback(
     (node: Node, event: React.MouseEvent) => {
       if (event.ctrlKey || event.metaKey) {
-        if (
-          selectedNodeId !== null &&
-          selectedNodeId !== node.id &&
-          !hasEdgeByNodeIds(edges, selectedNodeId, node.id)
-        ) {
-          const newEdge = { id: generateId(), start: selectedNodeId, end: node.id };
-          setEdges([...edges, newEdge]);
-        }
+        dispatch({ type: ActionType.EDGE_ADD, payload: { start: selectedNodeId, end: node.id } });
       } else {
-        setSelectedNodeId(node.id);
+        dispatch({ type: ActionType.NODE_SELECT, payload: { nodeId: node.id } });
       }
     },
     [edges, selectedNodeId],
   );
 
-  const handleDoubleClick = useCallback(
-    (node: Node, event: React.MouseEvent) => {
-      const newText = prompt('text');
-      if (newText !== null) {
-        const newNode = { ...node, text: newText };
-        setNodes(updateNode(nodes, newNode));
-      }
-    },
-    [edges, selectedNodeId, nodes],
-  );
+  const handleDoubleClick = useCallback((node: Node) => {
+    const newText = prompt('text');
+    if (newText !== null) {
+      const newNode = { ...node, text: newText };
+      dispatch({ type: ActionType.NODE_UPDATE, payload: { node: newNode } });
+    }
+  }, []);
 
   const handleDeselect = useCallback(() => {
-    setSelectedNodeId(null);
+    dispatch({ type: ActionType.NODE_DESELECT });
   }, []);
 
   const handleRemove = useCallback(() => {
-    const newNodes = nodes.filter(node => node.id !== selectedNodeId);
-    const newEdges = edges.filter(
-      edge => edge.start !== selectedNodeId && edge.end !== selectedNodeId,
-    );
-    setNodes(newNodes);
-    setEdges(newEdges);
-  }, [nodes, edges, selectedNodeId]);
+    dispatch({ type: ActionType.NODE_REMOVE });
+  }, []);
 
   const handleMouseDown = useCallback(({ node }: DragPayload) => {
     setDraggingNode(node);
@@ -81,7 +138,7 @@ const App: React.FunctionComponent<{}> = () => {
   const handleMouseUp = useCallback(
     (_: DragPayload) => {
       if (draggingNode !== null) {
-        setNodes(updateNode(nodes, draggingNode));
+        dispatch({ type: ActionType.NODE_UPDATE, payload: { node: draggingNode } });
         setDraggingNode(null);
         setDragging(false);
       }
