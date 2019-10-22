@@ -75,10 +75,6 @@ function updateNode(nodes: Node[], newNode: Node): Node[] {
   return nodes.map(node => (node.id === newNode.id ? newNode : node));
 }
 
-// function hasEdgeByNodeId(edges: Edge[], nodeId: string): boolean {
-//   return !!edges.find(edge => edge.start === nodeId || edge.end === nodeId);
-// }
-
 function hasNodeById(nodes: Node[], id: string): boolean {
   return !!nodes.find(node => node.id === id);
 }
