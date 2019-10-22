@@ -22,9 +22,18 @@
 }
 
 .NodeView__text {
-  fill: black;
   pointer-events: none;
   user-select: none;
+}
+
+.NodeView__text-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: black;
+  height: 100%;
+  margin: 0;
 }
 
 .EdgeView {

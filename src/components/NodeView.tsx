@@ -8,7 +8,8 @@ import { NODE_RADIUS } from '../constants';
 interface Props {
   node: Node;
   selected: boolean;
-  onClick: (event: React.MouseEvent) => void;
+  onClick: (node: Node, event: React.MouseEvent) => void;
+  onDoubleClick: (node: Node, event: React.MouseEvent) => void;
   onMouseDown: (payload: DragPayload, event: React.MouseEvent) => void;
   onMouseUp: (payload: DragPayload) => void;
   onMouseMove: (payload: DragPayload) => void;
@@ -18,6 +19,7 @@ export const NodeView: React.FunctionComponent<Props> = ({
   node,
   selected,
   onClick,
+  onDoubleClick,
   onMouseDown,
   onMouseMove,
   onMouseUp,
@@ -78,9 +80,17 @@ export const NodeView: React.FunctionComponent<Props> = ({
   const handleClick = useCallback(
     (event: React.MouseEvent) => {
       event.stopPropagation();
-      onClick(event);
+      onClick(node, event);
     },
-    [onClick],
+    [onClick, node],
+  );
+
+  const handleDoubleClick = useCallback(
+    (event: React.MouseEvent) => {
+      event.stopPropagation();
+      onDoubleClick(node, event);
+    },
+    [onDoubleClick, node],
   );
 
   return (
@@ -91,17 +101,34 @@ export const NodeView: React.FunctionComponent<Props> = ({
         cy={node.y}
         r={NODE_RADIUS}
         onClick={handleClick}
+        onDoubleClick={handleDoubleClick}
         onMouseDown={handleMouseDown}
       />
-      <text
-        className="NodeView__text"
-        textAnchor="middle"
-        dominantBaseline="central"
-        x={node.x}
-        y={node.y}
-      >
-        {node.text}
-      </text>
+      <Text x={node.x} y={node.y} text={node.text} />
     </>
   );
+};
+
+/**
+ * HACK
+ * @see https://stackoverflow.com/questions/4991171/auto-line-wrapping-in-svg-text
+ */
+const Text: React.FunctionComponent<{ x: number; y: number; text: string }> = ({ x, y, text }) => {
+  return (
+    <foreignObject
+      className="NodeView__text"
+      x={x - NODE_RADIUS}
+      y={y - NODE_RADIUS}
+      width={NODE_RADIUS * 2}
+      height={NODE_RADIUS * 2}
+    >
+      <p className="NodeView__text-inner">{text}</p>
+    </foreignObject>
+  );
+
+  // return (
+  //   <text className="NodeView__text" textAnchor="middle" dominantBaseline="central" x={x} y={y}>
+  //     {text}
+  //   </text>
+  // );
 };

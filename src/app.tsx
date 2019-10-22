@@ -33,22 +33,32 @@ const App: React.FunctionComponent<{}> = () => {
   }, [nodes]);
 
   const handleClick = useCallback(
-    (nodeId: string, event: React.MouseEvent) => {
+    (node: Node, event: React.MouseEvent) => {
       if (event.ctrlKey || event.metaKey) {
-        console.log('EDGE', nodeId, selectedNodeId, edges);
         if (
           selectedNodeId !== null &&
-          selectedNodeId !== nodeId &&
-          !hasEdgeByNodeIds(edges, selectedNodeId, nodeId)
+          selectedNodeId !== node.id &&
+          !hasEdgeByNodeIds(edges, selectedNodeId, node.id)
         ) {
-          const newEdge = { id: generateId(), start: selectedNodeId, end: nodeId };
+          const newEdge = { id: generateId(), start: selectedNodeId, end: node.id };
           setEdges([...edges, newEdge]);
         }
       } else {
-        setSelectedNodeId(nodeId);
+        setSelectedNodeId(node.id);
       }
     },
     [edges, selectedNodeId],
+  );
+
+  const handleDoubleClick = useCallback(
+    (node: Node, event: React.MouseEvent) => {
+      const newText = prompt('text');
+      if (newText !== null) {
+        const newNode = { ...node, text: newText };
+        setNodes(updateNode(nodes, newNode));
+      }
+    },
+    [edges, selectedNodeId, nodes],
   );
 
   const handleDeselect = useCallback(() => {
@@ -110,7 +120,8 @@ const App: React.FunctionComponent<{}> = () => {
             key={node.id}
             node={node}
             selected={selectedNodeId === node.id}
-            onClick={event => handleClick(node.id, event)}
+            onClick={handleClick}
+            onDoubleClick={handleDoubleClick}
             onMouseDown={handleMouseDown}
             onMouseUp={handleMouseUp}
             onMouseMove={handleMouseMove}
@@ -122,6 +133,7 @@ const App: React.FunctionComponent<{}> = () => {
             node={draggingNode}
             selected={false}
             onClick={noop}
+            onDoubleClick={noop}
             onMouseDown={noop}
             onMouseUp={noop}
             onMouseMove={noop}
