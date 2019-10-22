@@ -46,7 +46,7 @@ const App: React.FunctionComponent<{}> = () => {
   }, []);
 
   const handleDoubleClick = useCallback((node: Node) => {
-    const newText = prompt('text');
+    const newText = prompt('text', node.text);
     if (newText !== null) {
       const newNode = { ...node, text: newText };
       dispatch({ type: ActionType.NODE_UPDATE, payload: { node: newNode } });
